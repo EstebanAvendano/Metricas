@@ -1,0 +1,22 @@
+.pantalla-encabezado {
+  margin-bottom: 24px;
+}
+
+.pantalla-titulo {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.pantalla-subtitulo {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.pantalla-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}

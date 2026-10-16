@@ -1,0 +1,22 @@
+.barra-superior {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--blanco);
+  border-bottom: 1px solid var(--borde);
+  padding: 16px 32px;
+}
+
+.barra-superior-titulo {
+  font-weight: bold;
+}
+
+.barra-superior-periodo {
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.barra-superior-usuario {
+  margin-left: auto;
+  font-size: 14px;
+}

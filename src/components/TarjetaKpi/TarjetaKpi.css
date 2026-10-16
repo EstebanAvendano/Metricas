@@ -1,0 +1,193 @@
+.tarjeta-kpi {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-top: 4px solid var(--color-kpi);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+/* Encabezado: ícono + nombre a la izquierda, meta a la derecha */
+.tarjeta-kpi-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tarjeta-kpi-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tarjeta-kpi-icono {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  color: var(--color-kpi);
+  background: color-mix(in srgb, var(--color-kpi) 15%, white);
+}
+
+.tarjeta-kpi-nombre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.tarjeta-kpi-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+
+  color: var(--color-kpi);
+  background: color-mix(in srgb, var(--color-kpi) 12%, white);
+}
+
+.tarjeta-kpi-meta small {
+  font-weight: 400;
+}
+
+/* Resultado grande + pastilla de estado */
+.tarjeta-kpi-cifras {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tarjeta-kpi-resultado {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.tarjeta-kpi-unidad {
+  margin-left: 4px;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+
+.tarjeta-kpi-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tarjeta-kpi-estado.cumple {
+  color: var(--verde);
+  background: #dcfce7;
+}
+
+.tarjeta-kpi-estado.no-cumple {
+  color: var(--rojo);
+  background: #fee2e2;
+}
+
+/* Caja de la fórmula */
+.tarjeta-kpi-formula {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--fondo);
+}
+
+.tarjeta-kpi-formula-encabezado {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.tarjeta-kpi-fuente {
+  font-weight: 700;
+  color: var(--color-kpi);
+}
+
+.tarjeta-kpi-formula code {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--texto);
+  overflow-wrap: anywhere;
+}
+
+.tarjeta-kpi-formula p {
+  margin: 0;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
+/* Dato de apoyo */
+.tarjeta-kpi-apoyo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--borde);
+}
+
+.tarjeta-kpi-etiqueta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.tarjeta-kpi-apoyo strong {
+  font-family: var(--mono);
+  font-size: 16px;
+}
+
+/* Barra de progreso */
+.tarjeta-kpi-progreso-texto {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.tarjeta-kpi-progreso-texto span:last-child {
+  font-weight: 700;
+  color: var(--color-kpi);
+}
+
+.tarjeta-kpi-barra {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--borde);
+}
+
+.tarjeta-kpi-barra-relleno {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-kpi);
+}

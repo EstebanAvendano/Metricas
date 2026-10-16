@@ -1,0 +1,27 @@
+/* Colores del diseño, guardados en variables para reutilizarlos */
+:root {
+  --morado-oscuro: #240b49;
+  --morado: #7e22ce;
+  --fondo: #f1f5f9;
+  --blanco: #ffffff;
+  --texto: #1e293b;
+  --texto-suave: #64748b;
+  --borde: #e2e8f0;
+  --verde: #16a34a;
+  --rojo: #dc2626;
+  --mono: "JetBrains Mono", Consolas, monospace;
+}
+
+/* Hace que el tamaño de las cajas incluya el borde y el relleno */
+* {
+  box-sizing: border-box;
+}
+
+/* Quita el margen que el navegador pone por defecto y define la letra base */
+body {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", system-ui, "Segoe UI", sans-serif;
+
+  color: var(--texto);
+  background: var(--fondo);
+}

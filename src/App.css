@@ -1,0 +1,18 @@
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-principal {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-contenido {
+  padding: 32px;
+}
+.app-en-construccion {
+  color: var(--texto-suave);
+}
