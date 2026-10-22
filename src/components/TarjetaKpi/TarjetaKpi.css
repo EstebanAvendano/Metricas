@@ -103,6 +103,11 @@
   background: #fee2e2;
 }
 
+.tarjeta-kpi-estado.sin-datos {
+  color: var(--texto-suave);
+  background: var(--fondo);
+}
+
 /* Caja de la fórmula */
 .tarjeta-kpi-formula {
   display: flex;

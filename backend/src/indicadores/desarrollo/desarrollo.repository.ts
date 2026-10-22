@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseDatosService } from '../../base-datos/base-datos.service.js';
 import { ExclusionEstandarService } from '../comun/exclusion-estandar.service.js';
 import type { FiltrosKpi } from '../comun/filtros-kpi.js';
+import { filtroUsuario } from '../comun/filtros-kpi.js';
 
 const EQUIPO_DESARROLLO_TI = 11;
 const ETIQUETA_CASO_SOPORTE_DESARROLLO = 192;
@@ -14,6 +15,11 @@ export type ConteoCalificaciones = {
 export type ConteoFallas = {
   ticketsTotales: number;
   ticketsFallas: number;
+};
+
+export type TiempoResolucion = {
+  creado: string;
+  cerrado: string;
 };
 
 @Injectable()
@@ -60,16 +66,7 @@ export class DesarrolloRepository {
 
   async contarFallas(filtros: FiltrosKpi): Promise<ConteoFallas> {
     const parametros: unknown[] = [filtros.desde, filtros.hasta];
-
-    let filtroUsuario = '';
-    if (filtros.usuario !== undefined) {
-      parametros.push(filtros.usuario);
-      filtroUsuario = `AND EXISTS (
-        SELECT 1 FROM "TBL_Requests_Assignments" a
-        WHERE a."Request_Assignment_ID" = r."Request_ID"
-          AND a."Request_Assignment_User_ID" = $3
-      )`;
-    }
+    const condicionUsuario = filtroUsuario(parametros, filtros.usuario);
 
     const sql = `
 
@@ -92,8 +89,33 @@ export class DesarrolloRepository {
          AND ${this.exclusion.condicion()}
       AND r."Request_Created_At" >= $1::date
       AND r."Request_Created_At" < $2::date + 1
-      ${filtroUsuario}`;
+      ${condicionUsuario}`;
     const [fila] = await this.bd.consultar<ConteoFallas>(sql, parametros);
     return fila;
+  }
+
+  async tiempoResolucion(filtros: FiltrosKpi): Promise<TiempoResolucion[]> {
+    const parametros: unknown[] = [filtros.desde, filtros.hasta];
+    const condicionUsuario = filtroUsuario(parametros, filtros.usuario);
+    const sql = `
+  SELECT
+      to_char(r."Request_Created_At",  'YYYY-MM-DD"T"HH24:MI:SS') AS creado,
+      to_char(r."Request_Finished_At", 'YYYY-MM-DD"T"HH24:MI:SS') AS cerrado
+    FROM "TBL_Requests" r
+    INNER JOIN "TBL_Request_Team" rt
+      ON rt."Request_Team_Request_ID" = r."Request_ID"
+    WHERE rt."Request_Team_ID" = ${EQUIPO_DESARROLLO_TI}
+      AND ${this.exclusion.condicion()}
+      AND r."Request_Finished_At" IS NOT NULL
+      AND EXISTS (
+        SELECT 1 FROM "TBL_Request_Labels" l
+        WHERE l."Request_Labels_Request_ID" = r."Request_ID"
+          AND l."Request_Labels_Label_ID" = ${ETIQUETA_CASO_SOPORTE_DESARROLLO}
+      )
+      AND r."Request_Finished_At" >= $1::date
+      AND r."Request_Finished_At" <  $2::date + 1
+      ${condicionUsuario}`;
+
+    return this.bd.consultar<TiempoResolucion>(sql, parametros);
   }
 }

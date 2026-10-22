@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 import { DesarrolloRepository } from './desarrollo.repository.js';
 import type { FiltrosKpi } from '../comun/filtros-kpi.js';
+import { diasHabilesEntre } from '../comun/periodo.js';
 
 const META_SATISFACCION = 4;
 
 const META_FALLAS = 15;
+
+const META_TIEMPO_RESOLUCION = 3;
 
 @Injectable()
 export class DesarrolloService {
@@ -33,6 +36,7 @@ export class DesarrolloService {
       detalle: { calificaciones: fila.calificaciones },
     };
   }
+
   async resolucionFallas(filtros: FiltrosKpi) {
     const fila = await this.repositorio.contarFallas(filtros);
     const resultado =
@@ -46,7 +50,7 @@ export class DesarrolloService {
 
     return {
       id: 'resolucion-fallas',
-      nombre: 'Resolución de Fallas',
+      nombre: 'Resolución de fallas',
       resultado: resultado === null ? null : Math.round(resultado * 100) / 100,
       meta: META_FALLAS,
       operador: '<',
@@ -57,5 +61,37 @@ export class DesarrolloService {
         ticketsTotales: fila.ticketsTotales,
       },
     };
+  }
+
+  async tiempoResolucion(filtros: FiltrosKpi) {
+    const filas = await this.repositorio.tiempoResolucion(filtros);
+    const sumaDias = filas.reduce(
+      (suma, fila) => suma + diasHabilesEntre(fila.creado, fila.cerrado),
+      0,
+    );
+    const resultado = filas.length === 0 ? null : sumaDias / filas.length;
+    let estado: 'cumple' | 'no_cumple' | 'sin_datos' = 'sin_datos';
+    if (resultado !== null) {
+      estado = resultado <= META_TIEMPO_RESOLUCION ? 'cumple' : 'no_cumple';
+    }
+
+    return {
+      id: 'tiempo-resolucion',
+      nombre: 'Tiempo de resolución de soporte',
+      resultado: resultado === null ? null : Math.round(resultado * 100) / 100,
+      meta: META_TIEMPO_RESOLUCION,
+      operador: '<=',
+      unidad: ' días',
+      estado,
+      detalle: { ticketsCerrados: filas.length },
+    };
+  }
+
+  async todas(filtros: FiltrosKpi) {
+    return Promise.all([
+      this.satisfaccion(filtros),
+      this.resolucionFallas(filtros),
+      this.tiempoResolucion(filtros),
+    ]);
   }
 }

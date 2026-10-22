@@ -30,7 +30,7 @@ export class DesarrolloController {
   @ApiOperation({
     summary: 'Resolución de fallas',
     description:
-      "Porcentaje de tickets con etiqueta 'Caso de Soporte' sobre los tikcets totales . Meta: <15% .",
+      "Porcentaje de tickets con etiqueta 'Caso de soporte' sobre los tickets totales. Meta: < 15%.",
   })
   @ApiFiltrosKpi()
   @Get('resolucion-fallas')
@@ -43,6 +43,24 @@ export class DesarrolloController {
       this.validarFiltros(desde, hasta, usuario),
     );
   }
+
+  @ApiOperation({
+    summary: 'Tiempo de resolución de soporte',
+    description:
+      "Promedio de días hábiles entre la creación y el cierre de los tickets 'Caso de soporte' cerrados en el período. Meta: ≤ 3 días.",
+  })
+  @ApiFiltrosKpi()
+  @Get('tiempo-resolucion')
+  tiempoResolucion(
+    @Query('desde') desde?: string,
+    @Query('hasta') hasta?: string,
+    @Query('usuario') usuario?: string,
+  ) {
+    return this.desarrolloService.tiempoResolucion(
+      this.validarFiltros(desde, hasta, usuario),
+    );
+  }
+
   private validarFiltros(
     desde?: string,
     hasta?: string,
@@ -69,5 +87,22 @@ export class DesarrolloController {
       hasta,
       usuario: usuario === undefined ? undefined : Number(usuario),
     };
+  }
+
+  @ApiOperation({
+    summary: 'Todas las métricas de Desarrollo',
+    description:
+      'Devuelve en una sola respuesta las métricas del dashboard de Desarrollo.',
+  })
+  @ApiFiltrosKpi()
+  @Get()
+  todas(
+    @Query('desde') desde?: string,
+    @Query('hasta') hasta?: string,
+    @Query('usuario') usuario?: string,
+  ) {
+    return this.desarrolloService.todas(
+      this.validarFiltros(desde, hasta, usuario),
+    );
   }
 }

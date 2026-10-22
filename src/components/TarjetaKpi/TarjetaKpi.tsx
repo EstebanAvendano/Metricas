@@ -1,45 +1,50 @@
 import type { CSSProperties } from "react";
 import { CheckCircle, XCircle } from "lucide-react";
-import type { Kpi, OperadorMeta } from "../../Models/Kpi.ts";
+import type { OperadordeMeta, Kpi } from "../../Models/Kpi.ts";
 
 import "./TarjetaKpi.css";
 
-const simbolos: Record<OperadorMeta, string> = {
+const simbolos: Record<OperadordeMeta, string> = {
   ">": ">",
   ">=": "≥",
   "<": "<",
   "<=": "≤",
 };
 
-function cumpleMeta(
+function calcularProgreso(
   resultado: number,
-  operador: OperadorMeta,
+  operador: OperadordeMeta,
   meta: number,
-): boolean {
-  if (operador === ">") return resultado > meta;
-  if (operador === ">=") return resultado >= meta;
-  if (operador === "<") return resultado < meta;
-  return resultado <= meta;
-}
-function calcularProgreso(kpi: Kpi): number {
-  if (kpi.operador === ">" || kpi.operador === ">=") {
-    return (kpi.resultado / kpi.meta) * 100;
+): number {
+  let progreso: number;
+  if (operador === ">" || operador === ">=") {
+    progreso = (resultado / meta) * 100;
+  } else if (resultado === 0) {
+    progreso = 100;
+  } else {
+    progreso = (meta / resultado) * 100;
   }
-  if (kpi.resultado === 0) return 100;
-  return (kpi.meta / kpi.resultado) * 100;
+  return Math.min(progreso, 100);
 }
+
 function formato(numero: number): string {
   return numero.toLocaleString("es-CO", { maximumFractionDigits: 2 });
 }
 
 function TarjetaKpi({ kpi }: { kpi: Kpi }) {
-  const cumple = cumpleMeta(kpi.resultado, kpi.operador, kpi.meta);
-  const progreso = calcularProgreso(kpi);
+  const { resultado } = kpi;
+  const tieneDatos = resultado !== null;
+  const cumple = kpi.estado === "cumple";
+
+  const progreso = tieneDatos
+    ? calcularProgreso(resultado, kpi.operador, kpi.meta)
+    : 0;
+
   const menorEsMejor = kpi.operador === "<" || kpi.operador === "<=";
 
-  const diferencia = kpi.resultado - kpi.meta;
+  const diferencia = tieneDatos ? resultado - kpi.meta : 0;
   const signo = diferencia > 0 ? "+" : "";
-  const unidadDiferencia = kpi.unidad === "%" ? " pp" : "vs ";
+  const unidadDiferencia = kpi.unidad === "%" ? " pp" : "";
 
   const Icono = kpi.icono;
   const IconoEstado = cumple ? CheckCircle : XCircle;
@@ -65,26 +70,32 @@ function TarjetaKpi({ kpi }: { kpi: Kpi }) {
 
       <div className="tarjeta-kpi-cifras">
         <span className="tarjeta-kpi-resultado">
-          {formato(kpi.resultado)}
-          <span className={kpi.unidad === "%" ? "" : "tarjeta-kpi-unidad"}>
-            {kpi.unidad}
-          </span>
+          {tieneDatos ? formato(resultado) : "—"}
+          {tieneDatos && (
+            <span className={kpi.unidad === "%" ? "" : "tarjeta-kpi-unidad"}>
+              {kpi.unidad}
+            </span>
+          )}
         </span>
-        <span
-          className={
-            cumple
-              ? "tarjeta-kpi-estado cumple"
-              : "tarjeta-kpi-estado no-cumple"
-          }
-        >
-          <IconoEstado size={16} />
-          {signo}
-          {formato(diferencia)}
-          {unidadDiferencia} vs meta
-        </span>
-      </div>
 
-      <div className="tarjeta-kpi-formula">
+        {tieneDatos ? (
+          <span
+            className={
+              cumple
+                ? "tarjeta-kpi-estado cumple"
+                : "tarjeta-kpi-estado no-cumple"
+            }
+          >
+            <IconoEstado size={16} />
+            {signo}
+            {formato(diferencia)}
+            {unidadDiferencia} vs meta
+          </span>
+        ) : (
+          <span className="tarjeta-kpi-estado sin-datos">Sin datos</span>
+        )}
+
+        <div className="tarjeta-kpi-formula"></div>
         <div className="tarjeta-kpi-formula-encabezado">
           <span>Fórmula de negocio</span>
           <span className="tarjeta-kpi-fuente">{kpi.fuente}</span>
@@ -101,7 +112,7 @@ function TarjetaKpi({ kpi }: { kpi: Kpi }) {
       <div className="tarjeta-kpi-progreso">
         <div className="tarjeta-kpi-progreso-texto">
           <span>Cumplimiento de la meta</span>
-          <span>{formato(progreso)}%</span>
+          <span>{tieneDatos ? `${formato(progreso)}%` : "-"}</span>
         </div>
         <div className="tarjeta-kpi-barra">
           <div

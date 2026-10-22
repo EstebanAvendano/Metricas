@@ -5,18 +5,18 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiFiltrosKpi } from '../comun/api-filtros-kpi.decorator.js';
 const FORMATO_FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
-@ApiTags('Indicadores · Sistemas')
+@ApiTags('Indicadores · Sistemas de Información')
 @Controller('indicadores/sistemas')
 export class SistemasController {
   constructor(private readonly sistemasService: SistemasService) {}
 
   @ApiOperation({
-    summary: 'Ateción de Soporte Funcional',
+    summary: 'Atención de Soporte Funcional',
     description:
       'Contabilizar los requerimientos de soporte recibidos. Meta: ≥ 83.33%.',
   })
   @ApiFiltrosKpi()
-  @Get('soporte')
+  @Get('soporte-funcional')
   soporte(
     @Query('desde') desde?: string,
     @Query('hasta') hasta?: string,
@@ -33,13 +33,30 @@ export class SistemasController {
       'Medir el correcto funcionamiento por horas laborales. Meta: >= 95% .',
   })
   @ApiFiltrosKpi()
-  @Get('dispo-servicios-criticos')
+  @Get('disponibilidad')
   disponibilidad(
     @Query('desde') desde?: string,
     @Query('hasta') hasta?: string,
     @Query('usuario') usuario?: string,
   ) {
     return this.sistemasService.disponibilidad(
+      this.validarFiltros(desde, hasta, usuario),
+    );
+  }
+
+  @ApiOperation({
+    summary: 'Resolución Fallas críticas',
+    description:
+      "Mide el soporte brindado a los servicios críticos etiquetados como 'Proyecto ETL' e 'Integraciones' Meta <=100%",
+  })
+  @ApiFiltrosKpi()
+  @Get('resolucion-fallas-criticas')
+  resolucion(
+    @Query('desde') desde?: string,
+    @Query('hasta') hasta?: string,
+    @Query('usuario') usuario?: string,
+  ) {
+    return this.sistemasService.fallascriticas(
       this.validarFiltros(desde, hasta, usuario),
     );
   }
@@ -70,5 +87,22 @@ export class SistemasController {
       hasta,
       usuario: usuario === undefined ? undefined : Number(usuario),
     };
+  }
+
+  @ApiOperation({
+    summary: 'Todas las métricas de Sistemas de Información',
+    description:
+      'Devuelve en una sola respuesta las métricas del dashboard de Sistemas de Información.',
+  })
+  @ApiFiltrosKpi()
+  @Get()
+  todas(
+    @Query('desde') desde?: string,
+    @Query('hasta') hasta?: string,
+    @Query('usuario') usuario?: string,
+  ) {
+    return this.sistemasService.todas(
+      this.validarFiltros(desde, hasta, usuario),
+    );
   }
 }
