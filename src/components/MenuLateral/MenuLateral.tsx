@@ -18,7 +18,7 @@ function MenuLateral({ areaActiva, alCambiarArea }: MenuLateralProps) {
     <aside className="menu-lateral">
       <div className="menu-lateral-marca">
         <img src="/favicon.svg" alt="" className="menu-lateral-logo" />
-        Indicadores EDM
+        Indicadores TI
       </div>
 
       <p className="menu-lateral-seccion">Áreas & KPIs</p>
@@ -39,6 +39,7 @@ function MenuLateral({ areaActiva, alCambiarArea }: MenuLateralProps) {
           </li>
         ))}
       </ul>
+      <div className="menu-lateral-usuario">Maria Jose</div>
     </aside>
   );
 }

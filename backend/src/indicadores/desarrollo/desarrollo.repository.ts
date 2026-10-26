@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseDatosService } from '../../base-datos/base-datos.service.js';
 import { ExclusionEstandarService } from '../comun/exclusion-estandar.service.js';
 import type { FiltrosKpi } from '../comun/filtros-kpi.js';
-import { filtroUsuario } from '../comun/filtros-kpi.js';
+import { filtroUsuario, listarUsuarios } from '../comun/filtros-kpi.js';
 
 const EQUIPO_DESARROLLO_TI = 11;
 const ETIQUETA_CASO_SOPORTE_DESARROLLO = 192;
@@ -28,7 +28,9 @@ export class DesarrolloRepository {
     private readonly bd: BaseDatosService,
     private readonly exclusion: ExclusionEstandarService,
   ) {}
-
+  usuarios() {
+    return listarUsuarios(this.bd, EQUIPO_DESARROLLO_TI);
+  }
   async sumarCalificaciones(
     filtros: FiltrosKpi,
   ): Promise<ConteoCalificaciones> {

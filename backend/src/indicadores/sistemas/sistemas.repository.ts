@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { BaseDatosService } from '../../base-datos/base-datos.service.js';
 import { ExclusionEstandarService } from '../comun/exclusion-estandar.service.js';
-import { filtroUsuario, type FiltrosKpi } from '../comun/filtros-kpi.js';
+import {
+  filtroUsuario,
+  listarUsuarios,
+  type FiltrosKpi,
+} from '../comun/filtros-kpi.js';
 import { TiempoResolucion } from '../desarrollo/desarrollo.repository.js';
 
 const EQUIPO_SISTEMAS = 3;
@@ -29,6 +33,9 @@ export class SistemasRepository {
     private readonly bd: BaseDatosService,
     private readonly exclusion: ExclusionEstandarService,
   ) {}
+  usuarios() {
+    return listarUsuarios(this.bd, EQUIPO_SISTEMAS);
+  }
 
   async contarSolicitudesSoporte(filtros: FiltrosKpi): Promise<ConteoSoporte> {
     const parametros: unknown[] = [filtros.desde, filtros.hasta];

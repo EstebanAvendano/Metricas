@@ -3,6 +3,8 @@
   background: var(--morado-oscuro);
   color: var(--blanco);
   padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-lateral-marca {
@@ -57,4 +59,10 @@
 .menu-lateral-item:focus-visible {
   outline: 2px solid #38bdf8;
   outline-offset: 2px;
+}
+.menu-lateral-usuario {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 14px;
 }

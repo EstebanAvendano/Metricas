@@ -94,10 +94,14 @@ export class SistemasService {
     };
   }
   async todas(filtros: FiltrosKpi) {
-    return Promise.all([
-      this.disponibilidad(filtros),
-      this.fallascriticas(filtros),
-      this.soporte(filtros),
+    const [kpis, usuarios] = await Promise.all([
+      Promise.all([
+        this.disponibilidad(filtros),
+        this.fallascriticas(filtros),
+        this.soporte(filtros),
+      ]),
+      this.repositorio.usuarios(),
     ]);
+    return { kpis, usuarios };
   }
 }

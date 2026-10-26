@@ -94,8 +94,9 @@ function TarjetaKpi({ kpi }: { kpi: Kpi }) {
         ) : (
           <span className="tarjeta-kpi-estado sin-datos">Sin datos</span>
         )}
+      </div>
 
-        <div className="tarjeta-kpi-formula"></div>
+      <div className="tarjeta-kpi-formula">
         <div className="tarjeta-kpi-formula-encabezado">
           <span>Fórmula de negocio</span>
           <span className="tarjeta-kpi-fuente">{kpi.fuente}</span>

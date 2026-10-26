@@ -15,7 +15,7 @@ function Login({ alIniciarSesion }: LoginProps) {
         <div className="login-logo">
           <img src="/favicon.svg?v=2" alt="" />
           <div>
-            <strong>Indicadores EDM</strong>
+            <strong>Indicadores TI</strong>
             <span>Estudio de Moda</span>
           </div>
         </div>
@@ -53,7 +53,7 @@ function Login({ alIniciarSesion }: LoginProps) {
         </header>
         <div className="login-panel-centro">
           <section className="login-tarjeta">
-            <h2 className="login-titulo">Bienvenido a Indicadores EDM</h2>
+            <h2 className="login-titulo">Bienvenido a Indicadores TI</h2>
             <p className="login-subtitulo">
               Usa tus credenciales corporativas para acceder a tus indicadores
             </p>

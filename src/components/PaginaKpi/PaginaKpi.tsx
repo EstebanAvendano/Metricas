@@ -3,15 +3,21 @@ import { useEffect, useState } from "react";
 import TarjetaKpi from "../TarjetaKpi/TarjetaKpi.tsx";
 import "./PaginaKpi.css";
 import {
-  obtenerKpi,
-  periodoMesActual,
+  obtenerArea,
+  type Periodo,
   type RespuestaKpi,
+  type Usuario,
 } from "../../Services/IndicadoresApi.ts";
 
 type PaginaKpisProps = {
   titulo: string;
   subtitulo: string;
+  area: string;
+
   kpis: Kpi[];
+  periodo: Periodo;
+  usuario: number | null;
+  alRecibirUsuarios: (usuarios: Usuario[]) => void;
 };
 
 function combinar(kpi: Kpi, respuesta: RespuestaKpi): Kpi {
@@ -30,24 +36,30 @@ function combinar(kpi: Kpi, respuesta: RespuestaKpi): Kpi {
   };
 }
 
-function PaginaKpis({ titulo, subtitulo, kpis }: PaginaKpisProps) {
+function PaginaKpis({
+  titulo,
+  subtitulo,
+  area,
+  kpis,
+  periodo,
+  usuario,
+  alRecibirUsuarios,
+}: PaginaKpisProps) {
   const [kpisconDatos, setKpisConDatos] = useState<Kpi[]>(kpis);
   const [error, setError] = useState<string | null>(null);
-
-  const [periodo] = useState(periodoMesActual);
   useEffect(() => {
     let cancelado = false;
-    Promise.all(
-      kpis.map(async (kpi) => {
-        if (!kpi.ruta) return kpi;
-        const respuesta = await obtenerKpi(kpi.ruta, periodo);
-        return combinar(kpi, respuesta);
-      }),
-    )
-
-      .then((resultado) => {
+    obtenerArea(area, periodo, usuario)
+      .then((respuesta) => {
         if (cancelado) return;
-        setKpisConDatos(resultado);
+        setKpisConDatos(
+          kpis.map((kpi) => {
+            const datos = respuesta.kpis.find((r) => r.id === kpi.id);
+            return datos ? combinar(kpi, datos) : kpi;
+          }),
+        );
+
+        alRecibirUsuarios(respuesta.usuarios);
         setError(null);
       })
       .catch((e: Error) => {
@@ -56,7 +68,7 @@ function PaginaKpis({ titulo, subtitulo, kpis }: PaginaKpisProps) {
     return () => {
       cancelado = true;
     };
-  }, [kpis, periodo]);
+  }, [area, kpis, periodo, usuario, alRecibirUsuarios]);
 
   return (
     <section>

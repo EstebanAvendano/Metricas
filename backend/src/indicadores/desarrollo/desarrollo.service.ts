@@ -88,10 +88,14 @@ export class DesarrolloService {
   }
 
   async todas(filtros: FiltrosKpi) {
-    return Promise.all([
-      this.satisfaccion(filtros),
-      this.resolucionFallas(filtros),
-      this.tiempoResolucion(filtros),
+    const [kpis, usuarios] = await Promise.all([
+      Promise.all([
+        this.satisfaccion(filtros),
+        this.resolucionFallas(filtros),
+        this.tiempoResolucion(filtros),
+      ]),
+      this.repositorio.usuarios(),
     ]);
+    return { kpis, usuarios };
   }
 }

@@ -143,9 +143,10 @@
 
 .tarjeta-kpi-formula p {
   margin: 0;
-  font-size: 12px;
+  font-size: 10px;
+  line-height: 1.4;
   font-style: italic;
-  color: var(--texto-suave);
+  color: #94a3b8;
 }
 
 /* Dato de apoyo */

@@ -17,6 +17,34 @@ export type Periodo = {
   hasta: string; // AAAA-MM-DD
 };
 
+export type Usuario = {
+  id: number;
+  nombre: string;
+};
+export type RespuestaArea = {
+  kpis: RespuestaKpi[];
+  usuarios: Usuario[];
+};
+
+export async function obtenerArea(
+  area: string,
+  periodo: Periodo,
+  usuario: number | null,
+): Promise<RespuestaArea> {
+  const parametros = new URLSearchParams({
+    desde: periodo.desde,
+    hasta: periodo.hasta,
+  });
+  if (usuario !== null) parametros.set("usuario", String(usuario));
+  const url = `${import.meta.env.VITE_API_URL}/indicadores/${area}?${parametros}`;
+
+  const respuesta = await fetch(url);
+  if (!respuesta.ok) {
+    throw new Error(`El backend respondio ${respuesta.status} en ${area}`);
+  }
+  return respuesta.json();
+}
+
 function aTexto(fecha: Date): string {
   const year = fecha.getFullYear();
   const month = String(fecha.getMonth() + 1).padStart(2, "0");
